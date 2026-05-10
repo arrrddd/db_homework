@@ -36,3 +36,50 @@ WHERE T.Salary = (SELECT MAX(Salary) FROM TECHNICIAN);
 SELECT UnionMemNo, COUNT(*) AS NumberOfEmployees
 FROM EMPLOYEES
 GROUP BY UnionMemNo;
+
+
+
+
+
+--CUSTOM QUERIES
+-- 1) Count and categorize planes by weight
+SELECT 
+    CASE 
+        WHEN M.Weight < 40000 THEN 'Light'
+        WHEN M.Weight BETWEEN 40000 AND 100000 THEN 'Medium'
+        ELSE 'Heavy'
+    END AS WeightCategory,
+    COUNT(P.RegNo) AS PlaneCount
+FROM PLANE P
+JOIN MODEL M ON P.ModelNo = M.ModelNo
+GROUP BY WeightCategory
+ORDER BY PlaneCount DESC;
+
+-- 2) Find tests where the technician isnt an expert
+SELECT TI.RegNo, TI.SSN, E.Name, P.ModelNo AS PlaneModel
+FROM TESTINFO TI
+JOIN PLANE P ON TI.RegNo = P.RegNo
+JOIN EMPLOYEES E ON TI.SSN = E.SSN
+LEFT JOIN EXPERT EX ON TI.SSN = EX.SSN AND P.ModelNo = EX.ModelNo
+WHERE EX.SSN IS NULL;
+
+-- 3) Total labor hours spent on maintenence by unions
+SELECT E.UnionMemNo, SUM(TI.Hours) AS TotalMaintenanceHours
+FROM TESTINFO TI
+JOIN EMPLOYEES E ON TI.SSN = E.SSN
+GROUP BY E.UnionMemNo
+ORDER BY TotalMaintenanceHours DESC;
+
+-- 4) Find planes with most maintenence spent
+SELECT M.ModelNo, SUM(TI.Hours) AS TotalMaintenanceHours
+FROM TESTINFO TI
+JOIN PLANE P ON TI.RegNo = P.RegNo
+JOIN MODEL M ON P.ModelNo = M.ModelNo
+GROUP BY M.ModelNo
+ORDER BY TotalMaintenanceHours DESC;
+
+-- 5) Find average test score for each planes
+SELECT RegNo, ROUND(AVG(Score), 2) AS AverageScore
+FROM TESTINFO
+GROUP BY RegNo
+ORDER BY AverageScore ASC;
