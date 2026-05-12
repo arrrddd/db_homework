@@ -83,3 +83,37 @@ SELECT RegNo, ROUND(AVG(Score), 2) AS AverageScore
 FROM TESTINFO
 GROUP BY RegNo
 ORDER BY AverageScore ASC;
+
+-- 6) Find technicians who are experts on more than one model
+SELECT E.Name, COUNT(EX.ModelNo) AS ExpertModelCount
+FROM EMPLOYEES E
+JOIN TECHNICIAN T ON E.SSN = T.SSN
+JOIN EXPERT EX ON T.SSN = EX.SSN
+GROUP BY E.SSN, E.Name
+HAVING COUNT(EX.ModelNo) > 1;
+
+-- 7) Find airplanes that received a test score below 90
+SELECT TI.RegNo, TE.Name AS TestName, TI.Score, TI.Date
+FROM TESTINFO TI
+JOIN TEST TE ON TI.FAANo = TE.FAANo
+WHERE TI.Score < 90
+ORDER BY TI.Score ASC;
+
+-- 8) Find the average salary of technicians
+SELECT ROUND(AVG(Salary), 2) AS AverageTechnicianSalary
+FROM TECHNICIAN;
+
+-- 9) Find each technician and total number of tests performed
+SELECT E.Name, COUNT(TI.FAANo) AS NumberOfTestsPerformed
+FROM EMPLOYEES E
+JOIN TECHNICIAN T ON E.SSN = T.SSN
+LEFT JOIN TESTINFO TI ON T.SSN = TI.SSN
+GROUP BY E.SSN, E.Name
+ORDER BY NumberOfTestsPerformed DESC;
+
+-- 10) Find traffic controllers whose medical exam date is before 2024-06-01
+SELECT E.Name, TC.ExamDate
+FROM TRAFFICCONT TC
+JOIN EMPLOYEES E ON TC.SSN = E.SSN
+WHERE TC.ExamDate < '2024-06-01'
+ORDER BY TC.ExamDate;
