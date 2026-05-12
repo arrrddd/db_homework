@@ -117,3 +117,14 @@ FROM TRAFFICCONT TC
 JOIN EMPLOYEES E ON TC.SSN = E.SSN
 WHERE TC.ExamDate < '2024-06-01'
 ORDER BY TC.ExamDate;
+
+-- UPDATE example: Increase salary of a technician
+UPDATE TECHNICIAN
+SET Salary = Salary + 5000
+WHERE SSN = '222-22-2222';
+
+-- DELETE example: Delete a testing event
+DELETE FROM TESTINFO
+WHERE RegNo = 'TC-GHI'
+  AND SSN = '444-44-4444'
+  AND FAANo = 1001;
